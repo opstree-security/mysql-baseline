@@ -139,5 +139,3 @@
 #   end
 #   only_if { command("ls #{mysql_hardening_file}").exit_status.zero? }
 # end
-
-

@@ -1,6 +1,6 @@
 ---
-name: mysql-baseline
-title: DevSec MySQL Baseline
+name: mysql-baseline-opstree
+title: Opstree MySQL Baseline
 maintainer: DevSec Hardening Framework Team
 copyright: DevSec Hardening Framework Team
 copyright_email: hello@dev-sec.io

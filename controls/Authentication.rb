@@ -80,11 +80,11 @@ control "mysql--authentication-passwordPolicy" do
     validate_password_policy=MEDIUM"
     ref 'See mysql Validate Password Plugin', url: 'http://dev.mysql.com/doc/refman/5.6/en/validate-password-plugin.html'
     describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES LIKE \'validate_password%\';') do
-        its('output') { should  match /validate_password_length/ }
-        its('output') { should  match /validate_password_number_count/ }
-        its('output') { should  match /validate_password_special_char_count/ }
-        its('output') { should  match /validate_password_policy/ }
-        its('output') { should  match /validate_password_length/ }
+        its('output') { should  match(/validate_password_length/) }
+        its('output') { should  match(/validate_password_number_count/) }
+        its('output') { should  match(/validate_password_special_char_count/) }
+        its('output') { should  match(/validate_password_policy/) }
+        its('output') { should  match(/validate_password_length/) }
     end
 end
 
@@ -101,7 +101,7 @@ control "mysql--authentication-hostname" do
     tag Remedy:"Either ALTER the user's host to be specific or DROP the user"
     ref 'See mysql Hostnames', url: 'https://dev.mysql.com/doc/refman/5.7/en/account-names.html'
     describe mysql_session(mysql_user, mysql_password).query('SELECT user, host FROM mysql.user WHERE host = '%';') do
-        its('output') { should  match // }
+        its('output') { should  match(//) }
     end
 end
 
@@ -118,6 +118,6 @@ control "mysql--authentication-Anonymous" do
     tag Remedy:"For each anonymous user, DROP or assign them a name"
     ref 'See how to remove anonymous user', url: 'https://www.networkinghowtos.com/howto/remove-anonymous-user-from-mysql/#:~:text=MySQL%20includes%20an%20anonymous%20user,put%20into%20a%20production%20environment.'
     describe mysql_session(mysql_user, mysql_password).query('SELECT user,host FROM mysql.user WHERE user = '';') do
-        its('output') { should  match // }
+        its('output') { should  match(//) }
     end
 end
