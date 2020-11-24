@@ -17,16 +17,20 @@ control "mysql--authentication-old_password " do
     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
     tag Remedy:"Configure mysql to leverage the mysql_native_password or sha256_password plugin"
     ref 'About Mysql Old Password', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html#sysvar_old_passwords'
+    sql = mysql_session(mysql_user, mysql_password)
+    describe sql.query('SHOW VARIABLES WHERE Variable_name = \'old_passwords\';') do
+        its('output') { should_not match(/1|ON/) }
+      end
     describe command("mysql -u#{mysql_user} -p#{mysql_password} -sN -e SHOW VARIABLES WHERE Variable_name = \'old_passwords\';'") do
-        its(:stdout) { should_not match(/1|ON/) }
+        its(output) { should_not match(/1|ON/) }
     end
     describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES WHERE Variable_name = \'old_passwords\';') do
-        its(:stdout) { should_not match /1|ON/ }
+        its(output) { should_not match /1|ON/ }
       end
     end
 
 control "mysql--authentication-secure-auth" do
-    title "Ensure 'old_passwords' Is Not Set to '1' or 'ON'"
+    title "Ensure 'secure_auth' is set to 'ON'"
     desc "This option dictates whether the server will deny connections by clients that attempt to use
     accounts that have their password stored in the mysql_old_password format.
     Accounts having credentials stored using the old password format will be unable to login.
