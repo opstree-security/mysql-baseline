@@ -12,7 +12,7 @@ control "mysql--log-error " do
     tag Remedy:"Open the MySQL configuration file ( my.cnf or my.ini ) and Set the log-error option to the path for the error log"
     ref 'Mysql Error Log', url: 'http://dev.mysql.com/doc/refman/5.6/en/error-log.html'
     describe mysql_session(mysql_user, mysql_password).query('SHOW variables LIKE \'log_error\';') do
-        its('output') { should match(/var\/log\/mysql\/error.log/) }
+        its('stdout') { should match(/var\/log\/mysql\/error.log/) }
       end
     end
 
@@ -31,7 +31,7 @@ control "mysql--log-warning " do
                 i.e log-warnings = 2"
     ref 'Mysql log_warning levels', url: 'https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html#sysvar_log_warnings'
     describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'log_warnings\';') do
-        its('output') { should match(/2/) }
+        its('stdout') { should match(/2/) }
       end
     end
 
@@ -48,7 +48,7 @@ control "mysql--log-raw " do
         log-raw = OFF"
     ref 'Mysql Log raw', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-options.html#option_mysqld_log-raw'
     describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'log_raw\';') do
-        its('output') { should match(/OFF/) }
+        its('stdout') { should match(/OFF/) }
       end
     end
 
@@ -69,7 +69,7 @@ control "mysql--connection policy " do
     set global audit_log_connection_policy = ERRORS"
     ref 'Mysql Audit Log connection Policy', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_connection_policy'
     describe mysql_session(mysql_user, mysql_password).query('show variables like \'%audit_log_connection_policy%\';') do
-        its('output') { should_not match(/NONE/) }
+        its('stdout') { should_not match(/NONE/) }
       end
     end
 
@@ -87,7 +87,7 @@ control "mysql--log_exclude_accounts " do
         SET GLOBAL audit_log_exclude_accounts = NULL"
     ref 'Mysql audit Log exclude accounts', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_exclude_accounts'
     describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES LIKE \'%audit_log_exclude_accounts%\';') do
-        its('output') { should match(/NULL|/) }
+        its('stdout') { should match(/NULL|/) }
       end
     end
 
@@ -106,7 +106,7 @@ control "mysql--log_include_accounts " do
     SET GLOBAL audit_log_include_accounts = NULL"
     ref 'Mysql audit Log include accounts', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_include_accounts'
     describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES LIKE \'%audit_log_include_accounts%\';') do
-        its('output') { should  match(/NULL|/) }
+        its('stdout') { should  match(/NULL|/) }
       end
     end
 control "mysql--audit-log_policy " do
@@ -120,7 +120,7 @@ control "mysql--audit-log_policy " do
     restarting the server or executing SET GLOBAL audit_log_policy='ALL';"
     ref 'Mysql audit Log policy', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_policy'
     describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_policy\';') do
-        its('output') { should  match(/LOGINS|ALL|/) }
+        its('stdout') { should  match(/LOGINS|ALL|/) }
       end
     end
 
@@ -135,7 +135,7 @@ control "mysql--audit-log_policy-connection " do
     restarting the server or executing SET GLOBAL audit_log_policy='ALL';"
     ref 'Mysql audit Log policy', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_policy'
     describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_policy\';') do
-        its('output') { should  match(/ALL/) }
+        its('stdout') { should  match(/ALL/) }
       end
     end
 
@@ -152,7 +152,7 @@ control "mysql--audit-log_strategy " do
     tag Remedy: "Set audit_log_strategy='SEMISYNCHRONOUS' (or SYNCHRONOUS )"
     ref 'Mysql audit Log strategy', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_strategy'
     describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_strategy\';') do
-        its('output') { should  match(/SYNCHRONOUS|SEMISYNCHRONOUS/) }
+        its('stdout') { should  match(/SYNCHRONOUS|SEMISYNCHRONOUS/) }
       end
     end
 
@@ -169,7 +169,7 @@ control "mysql--audit-plugin " do
     tag Remedy: "Ensure the following line to make  in the mysqld section audit_log = 'FORCE_PLUS_PERMANENT"
     ref 'Mysql audit Log', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#option_mysqld_audit-log'
     describe mysql_session(mysql_user, mysql_password).query('SELECT LOAD_OPTION FROM information_schema.plugins WHERE PLUGIN_NAME=\'audit_log\';') do
-        its('output') { should  match(/FORCE_PLUS_PERMANENT/) }
+        its('stdout') { should  match(/FORCE_PLUS_PERMANENT/) }
       end
     end
     
