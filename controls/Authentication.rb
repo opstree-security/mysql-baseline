@@ -19,7 +19,7 @@ control "mysql--authentication-old_password " do
     ref 'About Mysql Old Password', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html#sysvar_old_passwords'
     sql = mysql_session(mysql_user, mysql_password)
     describe sql.query('SHOW VARIABLES WHERE Variable_name = \'old_passwords\';') do
-        its('output') { should_not match(/1|ON//) }
+        its('output') { should_not match(/1|ON/) }
       end
     describe command("mysql -u#{mysql_user} -p#{mysql_password} -sN -e SHOW VARIABLES WHERE Variable_name = \'old_passwords\';'") do
         its('output') { should_not match(/1|ON/) }
