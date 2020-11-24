@@ -17,9 +17,12 @@ control "mysql--authentication-old_password " do
     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
     tag Remedy:"Configure mysql to leverage the mysql_native_password or sha256_password plugin"
     ref 'About Mysql Old Password', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html#sysvar_old_passwords'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES WHERE Variable_name = \'old_passwords\';') do
-        its('output') { should_not match /1|ON/ }
-      end
+    describe command("mysql -u#{mysql_user} -p#{mysql_password} -sN -e SHOW VARIABLES WHERE Variable_name = \'old_passwords\';'") do
+        its(:stdout) { should_not match(/1|ON/) }
+    end
+    # describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES WHERE Variable_name = \'old_passwords\';') do
+    #     its('output') { should_not match /1|ON/ }
+    #   end
     end
 
 control "mysql--authentication-secure-auth" do
