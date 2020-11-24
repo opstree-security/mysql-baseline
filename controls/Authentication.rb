@@ -20,9 +20,9 @@ control "mysql--authentication-old_password " do
     describe command("mysql -u#{mysql_user} -p#{mysql_password} -sN -e SHOW VARIABLES WHERE Variable_name = \'old_passwords\';'") do
         its(:stdout) { should_not match(/1|ON/) }
     end
-    # describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES WHERE Variable_name = \'old_passwords\';') do
-    #     its('output') { should_not match /1|ON/ }
-    #   end
+    describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES WHERE Variable_name = \'old_passwords\';') do
+        its(:stdout) { should_not match /1|ON/ }
+      end
     end
 
 control "mysql--authentication-secure-auth" do
