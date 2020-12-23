@@ -12,7 +12,7 @@ control "mysql--network-ssl " do
     tag Remedy:"Set ssl for your mysql"
     ref 'Mysql SSL CONNECTION', url: 'http://dev.mysql.com/doc/refman/5.6/en/ssl-connections.html'
     describe mysql_session(mysql_user, mysql_password).query('SHOW variables WHERE variable_name = \'have_ssl\';') do
-        its('stdout') { should match(/YES/) }
+        its(:stdout) { should match(/YES/) }
       end
     end
 
@@ -28,6 +28,6 @@ control "mysql--network-ssl_type " do
     GRANT USAGE ON *.* TO 'user'@'app1.example.com' REQUIRE SSL;"
     ref 'Mysql SSL CONNECTION', url: 'http://dev.mysql.com/doc/refman/5.6/en/ssl-connections.html'
     describe mysql_session(mysql_user, mysql_password).query('SELECT user, host, ssl_type FROM mysql.user WHERE NOT HOST IN (\'::1\', \'127.0.0.1\', \'localhost\');') do
-        its('stdout') { should match(/SSL|ALL|x509|SPECIFIED/) }
+        its(:stdout) { should match(/SSL|ALL|x509|SPECIFIED/) }
       end
     end

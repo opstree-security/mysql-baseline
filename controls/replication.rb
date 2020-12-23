@@ -12,7 +12,7 @@ control "mysql-replication-master-info " do
     tag Remedy:"In my.cnf file set the master_info_repository value to TABLE"
     ref 'Mysql master-slave info', url: 'http://dev.mysql.com/doc/refman/5.6/en/replication-options-slave.html#sysvar_master_info_repository'
     describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'master_info_repository\';') do
-        its('stdout') { should match(/TABLE/) }
+        its(:stdout) { should match(/TABLE/) }
       end
     end
 
@@ -29,7 +29,7 @@ control "mysql-replication-wildcard " do
     tag Remedy:"Either ALTER the user's host to be specific or DROP the user"
     ref 'Mysql Replication', url: 'http://dev.mysql.com/doc/refman/5.6/en/replication-options-slave.html'
     describe mysql_session(mysql_user, mysql_password).query('SELECT user, host FROM mysql.user WHERE user=\'repl\' AND host = '%';') do
-        its('stdout') { should match(//) }
+        its(:stdout) { should match(//) }
       end
     end
 
@@ -48,6 +48,6 @@ control "mysql-super_priv" do
     tag Remedy:"Execute REVOKE SUPER ON *.* FROM 'repl';"
     ref 'Mysql Replication', url: 'http://dev.mysql.com/doc/refman/5.6/en/replication-options-slave.html'
     describe mysql_session(mysql_user, mysql_password).query('select user, host from mysql.user where user=\'repl\' and Super_priv = \'Y\';') do
-        its('stdout') { should match(//) }
+        its(:stdout) { should match(//) }
       end
     end

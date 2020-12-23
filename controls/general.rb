@@ -14,7 +14,7 @@ control "mysql--general-test-database " do
             DROP DATABASE \"test\";"
     ref 'Mysql Secure Installation', url: 'http://dev.mysql.com/doc/refman/5.6/en/mysql-secure-installation.html'
     describe mysql_session(mysql_user, mysql_password).query('SHOW DATABASES LIKE \'test\';') do
-        its('stdout') { should match(//) }
+        its(:stdout) { should match(//) }
       end
     end
   
@@ -30,7 +30,7 @@ control "mysql--general-local-infile " do
           local-infile=0"
     ref 'About Mysql Load Data', url: 'http://dev.mysql.com/doc/refman/5.6/en/load-data.html'
     describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES WHERE Variable_name = \'local_infile\';') do
-        its('stdout') { should_not match(/ON/) }
+        its(:stdout) { should_not match(/ON/) }
       end
     end
 
@@ -49,7 +49,7 @@ control "mysql--skip-symbolic-links " do
     Set the skip_symbolic_links to YES"
     ref 'About Mysql Symbolic Links', url: 'http://dev.mysql.com/doc/refman/5.6/en/symbolic-links.html'
     describe mysql_session(mysql_user, mysql_password).query('SHOW variables LIKE \'have_symlink\';') do
-        its('stdout') { should match(/YES|ON|DISABLED/) }
+        its(:stdout) { should match(/YES|ON|DISABLED/) }
       end
     end
 
@@ -70,7 +70,7 @@ control "mysql--daemon_memcached" do
     "
     ref 'About Mysql innodb Memcached', url: 'http://dev.mysql.com/doc/refman/5.6/en/innodb-memcached-security.html'
     describe mysql_session(mysql_user, mysql_password).query('SELECT * FROM information_schema.plugins WHERE PLUGIN_NAME=\'daemon_memcached\';') do
-        its('stdout') { should match(//) }
+        its(:stdout) { should match(//) }
       end
     end
 
@@ -89,7 +89,7 @@ control "mysql--secure_file_priv" do
     "
     ref 'Mysql Secure File Priviledge', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html#sysvar_secure_file_priv'
     describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES WHERE Variable_name = \'secure_file_priv\' AND Value<>'';') do
-        its('stdout') { should match(/mysql-files/) }
+        its(:stdout) { should match(/mysql-files/) }
       end
     end
 
@@ -111,6 +111,6 @@ control "mysql--sql_mode" do
     "
     ref 'Mysql sql_mode', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-sql-mode.html'
     describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES LIKE \'sql_mode\';') do
-        its('stdout') { should match(/mysql-files/) }
+        its(:stdout) { should match(/mysql-files/) }
       end
     end

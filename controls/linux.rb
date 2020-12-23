@@ -44,7 +44,7 @@ control "mysql--command-Line " do
   tag Remedy:"Create $HOME/.mysql_history as a symbolic to /dev/null ."
   ref 'Mysql Logging', url: 'http://dev.mysql.com/doc/refman/5.6/en/mysql-logging.html'
   describe command("sudo find /home -name  \".mysql_history\" -type f | wc -l ") do
-    its('stdout') { should match /^0/ }
+    its(:stdout) { should match /^0/ }
   end
 end
 
@@ -62,7 +62,7 @@ control "mysql--MYSQL_PWD environment" do
   tag Remedy:"Remove this variable and use some secured way"
   ref 'Mysql Environment Variables', url: 'http://dev.mysql.com/doc/refman/5.6/en/environment-variables.html'
   describe command("grep MYSQL_PWD /etc/environment | wc -l") do
-    its('stdout') { should match /^0/ }
+    its(:stdout) { should match /^0/ }
   end
 end
 

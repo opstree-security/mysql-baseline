@@ -124,7 +124,7 @@ control "mysql-ssl-key-permission" do
   chmod 400 <ssl_key Value>"
   ref 'Mysql ssh connections', url: 'http://dev.mysql.com/doc/refman/5.6/en/ssl-connections.html'
   describe command("sudo stat -c %a #{mysql_ssl_key} | grep \"400\" | wc -l") do
-    its('stdout') { should_not match /^0/ }
+    its(:stdout) { should_not match /^0/ }
   end
 end
 
