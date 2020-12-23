@@ -124,52 +124,52 @@ control "mysql--audit-log_policy " do
       end
     end
 
-control "mysql--audit-log_policy-connection " do
-    title "Ensure audit_log_policy is set to log logins and connections"
-    desc "With the audit_log_policy setting the amount of information which is sent to the audit log
-    is controlled. It must be set to log logins and connections."
-    impact 1.0
-    tag Vulnerability: 'Low'
-    tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
-    tag Remedy: "Set audit_log_policy='ALL' in the MySQL configuration file and activate the setting by
-    restarting the server or executing SET GLOBAL audit_log_policy='ALL';"
-    ref 'Mysql audit Log policy', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_policy'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_policy\';') do
-        its('stdout') { should  match(/ALL/) }
-      end
-    end
+# control "mysql--audit-log_policy-connection " do
+#     title "Ensure audit_log_policy is set to log logins and connections"
+#     desc "With the audit_log_policy setting the amount of information which is sent to the audit log
+#     is controlled. It must be set to log logins and connections."
+#     impact 1.0
+#     tag Vulnerability: 'Low'
+#     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
+#     tag Remedy: "Set audit_log_policy='ALL' in the MySQL configuration file and activate the setting by
+#     restarting the server or executing SET GLOBAL audit_log_policy='ALL';"
+#     ref 'Mysql audit Log policy', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_policy'
+#     describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_policy\';') do
+#         its('stdout') { should  match(/ALL/) }
+#       end
+#     end
 
-control "mysql--audit-log_strategy " do
-    title "Set audit_log_strategy to SYNCHRONOUS or SEMISYNCRONOUS"
-    desc "This setting controls how information is written to the audit log. It can be set to SYNCHRONOUS to make it fully durable or other settings which are less durable but have less performance overhead.
-    ASYNCHRONOUS: Log asynchronously. Wait for space in the output buffer.
-    PERFORMANCE: Log asynchronously. Drop requests for which there is insufficient space in the output buffer.
-    SEMISYNCHRONOUS: Log synchronously. Permit caching by the operating system.
-    SYNCHRONOUS: Log synchronously. Call sync() after each request."
-    impact 1.0
-    tag Vulnerability: 'Low'
-    tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
-    tag Remedy: "Set audit_log_strategy='SEMISYNCHRONOUS' (or SYNCHRONOUS )"
-    ref 'Mysql audit Log strategy', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_strategy'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_strategy\';') do
-        its('stdout') { should  match(/SYNCHRONOUS|SEMISYNCHRONOUS/) }
-      end
-    end
+# control "mysql--audit-log_strategy " do
+#     title "Set audit_log_strategy to SYNCHRONOUS or SEMISYNCRONOUS"
+#     desc "This setting controls how information is written to the audit log. It can be set to SYNCHRONOUS to make it fully durable or other settings which are less durable but have less performance overhead.
+#     ASYNCHRONOUS: Log asynchronously. Wait for space in the output buffer.
+#     PERFORMANCE: Log asynchronously. Drop requests for which there is insufficient space in the output buffer.
+#     SEMISYNCHRONOUS: Log synchronously. Permit caching by the operating system.
+#     SYNCHRONOUS: Log synchronously. Call sync() after each request."
+#     impact 1.0
+#     tag Vulnerability: 'Low'
+#     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
+#     tag Remedy: "Set audit_log_strategy='SEMISYNCHRONOUS' (or SYNCHRONOUS )"
+#     ref 'Mysql audit Log strategy', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_strategy'
+#     describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_strategy\';') do
+#         its('stdout') { should  match(/SYNCHRONOUS|SEMISYNCHRONOUS/) }
+#       end
+#     end
 
-control "mysql--audit-plugin " do
-    title "Make sure the audit plugin can't be unloaded"
-    desc "This makes disables unloading on the plugin.
-    If someone can unload the plugin it would be possible to perform actions on the database
-    without audit events being logged to the audit log. If the audit log plugin can be unloaded
-    the audit log can be temporarily or permanently disabled.
-    "
-    impact 1.0
-    tag Vulnerability: 'Medium'
-    tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
-    tag Remedy: "Ensure the following line to make  in the mysqld section audit_log = 'FORCE_PLUS_PERMANENT"
-    ref 'Mysql audit Log', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#option_mysqld_audit-log'
-    describe mysql_session(mysql_user, mysql_password).query('SELECT LOAD_OPTION FROM information_schema.plugins WHERE PLUGIN_NAME=\'audit_log\';') do
-        its('stdout') { should  match(/FORCE_PLUS_PERMANENT/) }
-      end
-    end
+# control "mysql--audit-plugin " do
+#     title "Make sure the audit plugin can't be unloaded"
+#     desc "This makes disables unloading on the plugin.
+#     If someone can unload the plugin it would be possible to perform actions on the database
+#     without audit events being logged to the audit log. If the audit log plugin can be unloaded
+#     the audit log can be temporarily or permanently disabled.
+#     "
+#     impact 1.0
+#     tag Vulnerability: 'Medium'
+#     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
+#     tag Remedy: "Ensure the following line to make  in the mysqld section audit_log = 'FORCE_PLUS_PERMANENT"
+#     ref 'Mysql audit Log', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#option_mysqld_audit-log'
+#     describe mysql_session(mysql_user, mysql_password).query('SELECT LOAD_OPTION FROM information_schema.plugins WHERE PLUGIN_NAME=\'audit_log\';') do
+#         its('stdout') { should  match(/FORCE_PLUS_PERMANENT/) }
+#       end
+#     end
     

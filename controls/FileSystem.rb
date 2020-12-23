@@ -82,7 +82,7 @@ control "mysql-audit-log-file" do
     chown mysql:mysql <audit_log_file>"
   ref 'About Audit Log File', url: 'https://dev.mysql.com/doc/refman/8.0/en/audit-log-file-formats.html'
   describe file(mysql_data_directory) do
-      it { should exits }
+      it { should exist }
       it { should_not be_writable.by('other') }
     end
   end

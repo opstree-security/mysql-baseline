@@ -49,7 +49,7 @@ control "mysql--skip-symbolic-links " do
     Set the skip_symbolic_links to YES"
     ref 'About Mysql Symbolic Links', url: 'http://dev.mysql.com/doc/refman/5.6/en/symbolic-links.html'
     describe mysql_session(mysql_user, mysql_password).query('SHOW variables LIKE \'have_symlink\';') do
-        its('stdout') { should match(/YES|ON/) }
+        its('stdout') { should match(/YES|ON|DISABLED/) }
       end
     end
 
