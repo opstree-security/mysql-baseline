@@ -74,24 +74,24 @@ control "mysql--daemon_memcached" do
       end
     end
 
-control "mysql--secure_file_priv" do
-    title "Ensure 'secure_file_priv' Is Not Empty"
-    desc "The secure_file_priv option restricts to paths used by LOAD DATA INFILE or SELECT
-    local_file . It is recommended that this option be set to a file system location that contains
-    only resources expected to be loaded by MySQL.
-    "
-    impact 1.0
-    tag Vulnerability: 'High'
-    tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
-    tag Remedy:"Add the following line to the [mysqld] section of the MySQL configuration file and restart
-    the MySQL service:
-    secure_file_priv=<path_to_load_directory>
-    "
-    ref 'Mysql Secure File Priviledge', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html#sysvar_secure_file_priv'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES WHERE Variable_name = \'secure_file_priv\' AND Value<>'';') do
-        its(:stdout) { should match(/mysql-files/) }
-      end
-    end
+# control "mysql--secure_file_priv" do
+#     title "Ensure 'secure_file_priv' Is Not Empty"
+#     desc "The secure_file_priv option restricts to paths used by LOAD DATA INFILE or SELECT
+#     local_file . It is recommended that this option be set to a file system location that contains
+#     only resources expected to be loaded by MySQL.
+#     "
+#     impact 1.0
+#     tag Vulnerability: 'High'
+#     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
+#     tag Remedy:"Add the following line to the [mysqld] section of the MySQL configuration file and restart
+#     the MySQL service:
+#     secure_file_priv=<path_to_load_directory>
+#     "
+#     ref 'Mysql Secure File Priviledge', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html#sysvar_secure_file_priv'
+#     describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES WHERE Variable_name = \'secure_file_priv\' AND Value<>'';') do
+#         its(:stdout) { should match(/mysql-files/) }
+#       end
+#     end
 
 # control "mysql--sql_mode" do
 #     title "Ensure 'sql_mode' Contains 'STRICT_ALL_TABLES'"
