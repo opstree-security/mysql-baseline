@@ -10,11 +10,11 @@ version: 4.0.3
 supports:
     - os-family: unix
 
- #attributes:
-    #- name: mysqlUser
-    #value: "prashant"
-    #- name: mysqlPassword
-    #value: "root"
+attributes:
+  - name: mysqlUser
+    value: "audit"
+  - name: mysqlPassword
+    value: "password!@#"
 
 
 # inputs:
