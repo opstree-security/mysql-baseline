@@ -1,5 +1,7 @@
 mysql_user  = attribute('mysqlUser', default: 'mysql', description: 'Name of mysql User')
 mysql_password  = attribute('mysqlPassword', default: 'root', description: 'Password of mysql User')
+mysql_ipAddress  = attribute('mysqlAddress', default: '127.0.0.1', description: 'Ip address of mysql')
+
 
 control "mysql--admin-priviledge-file_priv " do
     title "Ensure 'file_priv' Is Not Set to 'Y' for Non-Administrative Users"
@@ -16,7 +18,7 @@ control "mysql--admin-priviledge-file_priv " do
     administrative user:
     REVOKE FILE ON *.* FROM '<user>';"
     ref 'Mysql file_priv', url: 'http://dev.mysql.com/doc/refman/5.6/en/privileges-provided.html#priv_file'
-    describe mysql_session(mysql_user, mysql_password).query('select user  from mysql.user where File_priv = \'Y\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('select user  from mysql.user where File_priv = \'Y\';') do
         its(:stdout) { should cmp "root" }
       end
     end
@@ -36,7 +38,7 @@ control "mysql--admin-priviledge-process_priv " do
     administrative user:
     REVOKE PROCESS ON *.* FROM '<user>';"
     ref 'Mysql process_priv', url: 'http://dev.mysql.com/doc/refman/5.6/en/privileges-provided.html#priv_process'
-    describe mysql_session(mysql_user, mysql_password).query('select user  from mysql.user where Process_priv = \'Y\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('select user  from mysql.user where Process_priv = \'Y\';') do
         its(:stdout) { should cmp "root" }
       end
     end
@@ -56,7 +58,7 @@ control "mysql--admin-priviledge-super_priv " do
     administrative user:
     REVOKE SUPER ON *.* FROM '<user>';"
     ref 'Mysql super_priv', url: 'http://dev.mysql.com/doc/refman/5.6/en/privileges-provided.html#priv_super'
-    describe mysql_session(mysql_user, mysql_password).query('select user  from mysql.user where Super_priv = \'Y\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('select user  from mysql.user where Super_priv = \'Y\';') do
         its(:stdout) { should cmp "root" }
       end
     end
@@ -77,7 +79,7 @@ control "mysql--admin-priviledge-shutdown_priv " do
     administrative user:
     REVOKE SHUTDOWN ON *.* FROM '<user>';"
     ref 'Mysql shutdown_priv', url: 'http://dev.mysql.com/doc/refman/5.6/en/privileges-provided.html#priv_shutdown'
-    describe mysql_session(mysql_user, mysql_password).query('select user  from mysql.user where Shutdown_priv = \'Y\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('select user  from mysql.user where Shutdown_priv = \'Y\';') do
         its(:stdout) { should cmp "root" }
       end
     end
@@ -98,7 +100,7 @@ control "mysql--admin-priviledge-create_user_priv " do
     administrative user:
     REVOKE CREATE USER ON *.* FROM '<user>';"
     ref 'Mysql privilege', url: 'http://dev.mysql.com/doc/refman/5.6/en/privileges-provided.html'
-    describe mysql_session(mysql_user, mysql_password).query('select user  from mysql.user where Create_user_priv = \'Y\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('select user  from mysql.user where Create_user_priv = \'Y\';') do
         its(:stdout) { should cmp "root" }
       end
     end
@@ -119,7 +121,7 @@ control "mysql--admin-priviledge-grant_priv " do
     administrative user:
     REVOKE GRANT OPTION ON *.* FROM '<user>';"
     ref 'Mysql grant_priv', url: 'http://dev.mysql.com/doc/refman/5.6/en/privileges-provided.html#priv_grant-option'
-    describe mysql_session(mysql_user, mysql_password).query('select user  from mysql.user where Grant_priv = \'Y\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('select user  from mysql.user where Grant_priv = \'Y\';') do
         its(:stdout) { should cmp "root" }
       end
     end
@@ -139,7 +141,7 @@ control "mysql--admin-priviledge-grant_priv " do
     administrative user:
     REVOKE GRANT OPTION ON *.* FROM '<user>';"
     ref 'Mysql grant_priv', url: 'http://dev.mysql.com/doc/refman/5.6/en/privileges-provided.html#priv_grant-option'
-    describe mysql_session(mysql_user, mysql_password).query('select user  from mysql.user where Grant_priv = \'Y\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('select user  from mysql.user where Grant_priv = \'Y\';') do
         its(:stdout) { should cmp "root" }
       end
     end
@@ -159,7 +161,7 @@ control "mysql--admin-priviledge-replication " do
     administrative user:
     REVOKE REPLICATION SLAVE ON *.* FROM '<user>';"
     ref 'Mysql replication_priv', url: 'http://dev.mysql.com/doc/refman/5.6/en/privileges-provided.html#priv_replication-slave'
-    describe mysql_session(mysql_user, mysql_password).query('select user from mysql.user where Repl_slave_priv = \'Y\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('select user from mysql.user where Repl_slave_priv = \'Y\';') do
         its(:stdout) { should cmp "root" }
       end
     end

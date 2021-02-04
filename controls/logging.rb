@@ -1,5 +1,7 @@
 mysql_user  = attribute('mysqlUser', default: 'mysql', description: 'Name of mysql User')
 mysql_password  = attribute('mysqlPassword', default: 'root', description: 'Password of mysql User')
+mysql_ipAddress  = attribute('mysqlAddress', default: '127.0.0.1', description: 'Ip address of mysql')
+
 
 control "mysql--log-error " do
     title "Ensure 'log_error' Is Enabled"
@@ -11,7 +13,7 @@ control "mysql--log-error " do
     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
     tag Remedy:"Open the MySQL configuration file ( my.cnf or my.ini ) and Set the log-error option to the path for the error log"
     ref 'Mysql Error Log', url: 'http://dev.mysql.com/doc/refman/5.6/en/error-log.html'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW variables LIKE \'log_error\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW variables LIKE \'log_error\';') do
         its(:stdout) { should match(/var\/log\/mysql\/error.log/) }
       end
     end
@@ -30,7 +32,7 @@ control "mysql--log-warning " do
                 Ensure the following line is found in the mysqld section
                 i.e log-warnings = 2"
     ref 'Mysql log_warning levels', url: 'https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html#sysvar_log_warnings'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'log_warnings\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW GLOBAL VARIABLES LIKE \'log_warnings\';') do
         its(:stdout) { should match(/2/) }
       end
     end
@@ -47,7 +49,7 @@ control "mysql--log-raw " do
         Find the log-raw entry and set it as follows
         log-raw = OFF"
     ref 'Mysql Log raw', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-options.html#option_mysqld_log-raw'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'log_raw\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW GLOBAL VARIABLES LIKE \'log_raw\';') do
         its(:stdout) { should match(/OFF/) }
       end
     end
@@ -68,7 +70,7 @@ control "mysql--connection policy " do
     tag Remedy: "To remediate this configuration setting, execute one of the following SQL statements:
     set global audit_log_connection_policy = ERRORS"
     ref 'Mysql Audit Log connection Policy', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_connection_policy'
-    describe mysql_session(mysql_user, mysql_password).query('show variables like \'%audit_log_connection_policy%\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('show variables like \'%audit_log_connection_policy%\';') do
         its(:stdout) { should_not match(/NONE/) }
       end
     end
@@ -86,7 +88,7 @@ control "mysql--log_exclude_accounts " do
     tag Remedy: "To remediate this configuration setting, execute the following SQL statement
         SET GLOBAL audit_log_exclude_accounts = NULL"
     ref 'Mysql audit Log exclude accounts', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_exclude_accounts'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES LIKE \'%audit_log_exclude_accounts%\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW VARIABLES LIKE \'%audit_log_exclude_accounts%\';') do
         its(:stdout) { should match(/NULL|/) }
       end
     end
@@ -105,7 +107,7 @@ control "mysql--log_include_accounts " do
     tag Remedy: "To remediate this configuration setting, execute the following SQL statement
     SET GLOBAL audit_log_include_accounts = NULL"
     ref 'Mysql audit Log include accounts', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_include_accounts'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES LIKE \'%audit_log_include_accounts%\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW VARIABLES LIKE \'%audit_log_include_accounts%\';') do
         its(:stdout) { should  match(/NULL|/) }
       end
     end
@@ -119,7 +121,7 @@ control "mysql--audit-log_policy " do
     tag Remedy: "Set audit_log_policy='ALL' in the MySQL configuration file and activate the setting by
     restarting the server or executing SET GLOBAL audit_log_policy='ALL';"
     ref 'Mysql audit Log policy', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_policy'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_policy\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_policy\';') do
         its(:stdout) { should  match(/LOGINS|ALL|/) }
       end
     end
@@ -134,7 +136,7 @@ control "mysql--audit-log_policy " do
 #     tag Remedy: "Set audit_log_policy='ALL' in the MySQL configuration file and activate the setting by
 #     restarting the server or executing SET GLOBAL audit_log_policy='ALL';"
 #     ref 'Mysql audit Log policy', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_policy'
-#     describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_policy\';') do
+#     describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_policy\';') do
 #         its(:stdout) { should  match(/ALL/) }
 #       end
 #     end
@@ -151,7 +153,7 @@ control "mysql--audit-log_policy " do
 #     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
 #     tag Remedy: "Set audit_log_strategy='SEMISYNCHRONOUS' (or SYNCHRONOUS )"
 #     ref 'Mysql audit Log strategy', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#sysvar_audit_log_strategy'
-#     describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_strategy\';') do
+#     describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW GLOBAL VARIABLES LIKE \'audit_log_strategy\';') do
 #         its(:stdout) { should  match(/SYNCHRONOUS|SEMISYNCHRONOUS/) }
 #       end
 #     end
@@ -168,7 +170,7 @@ control "mysql--audit-log_policy " do
 #     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
 #     tag Remedy: "Ensure the following line to make  in the mysqld section audit_log = 'FORCE_PLUS_PERMANENT"
 #     ref 'Mysql audit Log', url: 'https://dev.mysql.com/doc/refman/5.6/en/audit-log-plugin-options-variables.html#option_mysqld_audit-log'
-#     describe mysql_session(mysql_user, mysql_password).query('SELECT LOAD_OPTION FROM information_schema.plugins WHERE PLUGIN_NAME=\'audit_log\';') do
+#     describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SELECT LOAD_OPTION FROM information_schema.plugins WHERE PLUGIN_NAME=\'audit_log\';') do
 #         its(:stdout) { should  match(/FORCE_PLUS_PERMANENT/) }
 #       end
 #     end

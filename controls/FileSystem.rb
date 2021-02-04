@@ -149,5 +149,4 @@ control "mysql-file-log_error-file-permission" do
         it { should_not be_writable.by('other') }
       end
     end
-
-
+    

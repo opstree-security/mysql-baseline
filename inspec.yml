@@ -15,6 +15,8 @@ attributes:
     value: "audit"
   - name: mysqlPassword
     value: "password!@#"
+  - name: mysqlAddress
+    vaule: '127.0.0.1'
 
 
 # inputs:

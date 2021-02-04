@@ -1,5 +1,7 @@
 mysql_user  = attribute('mysqlUser', default: 'mysql', description: 'Name of mysql User')
 mysql_password  = attribute('mysqlPassword', default: 'root', description: 'Password of mysql User')
+mysql_ipAddress  = attribute('mysqlAddress', default: '127.0.0.1', description: 'Ip address of mysql')
+
 
 control "mysql--authentication-old_password " do
     title "Ensure 'old_passwords' Is Not Set to '1' or 'ON'"
@@ -17,7 +19,7 @@ control "mysql--authentication-old_password " do
     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
     tag Remedy:"Configure mysql to leverage the mysql_native_password or sha256_password plugin"
     ref 'About Mysql Old Password', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html#sysvar_old_passwords'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES WHERE Variable_name = \'old_passwords\';') , :sensitive do
+    describe mysql_session(mysql_user,mysql_password,mysql_ipAddress).query('SHOW VARIABLES WHERE Variable_name = \'old_passwords\';')  do
         its(:stdout) { should_not match /1|ON/ }
       end
     end
@@ -35,11 +37,10 @@ control "mysql--authentication-secure-auth" do
     recommended state:
     secure_auth=ON"
     ref 'About Mysql secure auth', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-options.html#option_mysqld_secure-auth'
-    describe mysql_session(mysql_user, mysql_password).query('show variables like \'secure_auth\';;') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('show variables like \'secure_auth\';;') do
         its(:stdout) { should  match /ON/ }
       end
     end
-
 
 control "mysql--authentication-auto-create-user" do
     title "Ensure 'sql_mode' Contains 'NO_AUTO_CREATE_USER'"
@@ -51,10 +52,10 @@ control "mysql--authentication-auto-create-user" do
     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
     tag Remedy:"Find the sql_mode setting in the [mysqld] area and add the NO_AUTO_CREATE_USER to the sql_mode setting"
     ref 'See mysql sql mode and no_audo_create_user', url: 'https://dev.mysql.com/doc/refman/5.7/en/sql-mode.html'
-    describe mysql_session(mysql_user, mysql_password).query('SELECT @@global.sql_mode;') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SELECT @@global.sql_mode;') do
         its(:stdout) { should  match /NO_AUTO_CREATE_USER/ }
     end
-    describe mysql_session(mysql_user, mysql_password).query('SELECT @@session.sql_mode;') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SELECT @@session.sql_mode;') do
         its(:stdout) { should  match /NO_AUTO_CREATE_USER/ }
     end    
 end
@@ -79,7 +80,7 @@ control "mysql--authentication-passwordPolicy" do
     validate_password_special_char_count=1
     validate_password_policy=MEDIUM"
     ref 'See mysql Validate Password Plugin', url: 'http://dev.mysql.com/doc/refman/5.6/en/validate-password-plugin.html'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES LIKE \'validate_password%\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW VARIABLES LIKE \'validate_password%\';') do
         its(:stdout) { should  match(/validate_password_length/) }
         its(:stdout) { should  match(/validate_password_number_count/) }
         its(:stdout) { should  match(/validate_password_special_char_count/) }
@@ -100,7 +101,7 @@ control "mysql--authentication-hostname" do
     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
     tag Remedy:"Either ALTER the user's host to be specific or DROP the user"
     ref 'See mysql Hostnames', url: 'https://dev.mysql.com/doc/refman/5.7/en/account-names.html'
-    describe mysql_session(mysql_user, mysql_password).query('SELECT user, host FROM mysql.user WHERE host = '%';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SELECT user, host FROM mysql.user WHERE host = '%';') do
         its(:stdout) { should  match(//) }
     end
 end
@@ -117,7 +118,7 @@ control "mysql--authentication-Anonymous" do
     tag Version: 'CIS_Oracle_MySQL_Enterprise_Edition_5.6_Benchmark_v1.1.0'
     tag Remedy:"For each anonymous user, DROP or assign them a name"
     ref 'See how to remove anonymous user', url: 'https://www.networkinghowtos.com/howto/remove-anonymous-user-from-mysql/#:~:text=MySQL%20includes%20an%20anonymous%20user,put%20into%20a%20production%20environment.'
-    describe mysql_session(mysql_user, mysql_password).query('SELECT user,host FROM mysql.user WHERE user = '';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SELECT user,host FROM mysql.user WHERE user = '';') do
         its(:stdout) { should  match(//) }
     end
 end

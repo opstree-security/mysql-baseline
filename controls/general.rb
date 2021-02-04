@@ -1,5 +1,7 @@
 mysql_user  = attribute('mysqlUser', default: 'mysql', description: 'Name of mysql User')
 mysql_password  = attribute('mysqlPassword', default: 'root', description: 'Password of mysql User')
+mysql_ipAddress  = attribute('mysqlAddress', default: '127.0.0.1', description: 'Ip address of mysql')
+
 
 control "mysql--general-test-database " do
     title "Ensure the 'test' Database Is Not Installed"
@@ -13,7 +15,7 @@ control "mysql--general-test-database " do
     tag Remedy:"Execute the following SQL statement to drop the test database:
             DROP DATABASE \"test\";"
     ref 'Mysql Secure Installation', url: 'http://dev.mysql.com/doc/refman/5.6/en/mysql-secure-installation.html'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW DATABASES LIKE \'test\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW DATABASES LIKE \'test\';') do
         its(:stdout) { should match(//) }
       end
     end
@@ -29,7 +31,7 @@ control "mysql--general-local-infile " do
     tag Remedy:"Add the following line to the [mysqld] section of the MySQL configuration file and restart the MySQL service:
           local-infile=0"
     ref 'About Mysql Load Data', url: 'http://dev.mysql.com/doc/refman/5.6/en/load-data.html'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES WHERE Variable_name = \'local_infile\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW VARIABLES WHERE Variable_name = \'local_infile\';') do
         its(:stdout) { should_not match(/ON/) }
       end
     end
@@ -48,7 +50,7 @@ control "mysql--skip-symbolic-links " do
     tag Remedy:"Locate skip_symbolic_links in the configuration
     Set the skip_symbolic_links to YES"
     ref 'About Mysql Symbolic Links', url: 'http://dev.mysql.com/doc/refman/5.6/en/symbolic-links.html'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW variables LIKE \'have_symlink\';') do
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW variables LIKE \'have_symlink\';') do
         its(:stdout) { should match(/YES|ON|DISABLED/) }
       end
     end
@@ -69,7 +71,7 @@ control "mysql--skip-symbolic-links " do
 #     uninstall plugin daemon_memcached;
 #     "
 #     ref 'About Mysql innodb Memcached', url: 'http://dev.mysql.com/doc/refman/5.6/en/innodb-memcached-security.html'
-#     describe mysql_session(mysql_user, mysql_password).query('SELECT * FROM information_schema.plugins WHERE PLUGIN_NAME=\'daemon_memcached\';') do
+#     describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SELECT * FROM information_schema.plugins WHERE PLUGIN_NAME=\'daemon_memcached\';') do
 #         its(:stdout) { should match(//) }
 #       end
 #     end
@@ -88,8 +90,8 @@ control "mysql--secure_file_priv" do
     secure_file_priv=<path_to_load_directory>
     "
     ref 'Mysql Secure File Priviledge', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html#sysvar_secure_file_priv'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW GLOBAL VARIABLES WHERE Variable_name = \'secure_file_priv\' AND Value<>'';') do
-        its(:stdout) { should match(/mysql-files/) }
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW GLOBAL VARIABLES WHERE Variable_name = \'secure_file_priv\' AND Value<>'';') do
+        its(:stdout) { should_not match(//) }
       end
     end
 
@@ -110,7 +112,7 @@ control "mysql--sql_mode" do
     tag Remedy:"Add STRICT_ALL_TABLES to the sql_mode in the server's configuration file
     "
     ref 'Mysql sql_mode', url: 'http://dev.mysql.com/doc/refman/5.6/en/server-sql-mode.html'
-    describe mysql_session(mysql_user, mysql_password).query('SHOW VARIABLES LIKE \'sql_mode\';') do
-        its(:stdout) { should match(/mysql-files/) }
+    describe mysql_session(mysql_user, mysql_password, mysql_ipAddress).query('SHOW VARIABLES LIKE \'sql_mode\';') do
+        its(:stdout) { should match(/STRICT_ALL_TABLES/) }
       end
     end
